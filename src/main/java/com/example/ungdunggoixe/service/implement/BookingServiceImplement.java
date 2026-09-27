@@ -109,7 +109,8 @@ public class BookingServiceImplement implements BookingService {
 
         User renter = userRepository.findById(request.getRenterId())
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
-        Vehicle vehicle = vehicleRepository.findById(request.getVehicleId())
+        // Khóa dòng xe tới hết transaction: request đặt cùng xe phải chờ, nên check trùng lịch + insert là nguyên tử.
+        Vehicle vehicle = vehicleRepository.findByIdForUpdate(request.getVehicleId())
                 .orElseThrow(() -> new AppException(ErrorCode.VEHICLE_NOT_FOUND));
         Station station = stationRepository.findById(request.getStationId())
                 .orElseThrow(() -> new AppException(ErrorCode.STATION_NOT_FOUND));
